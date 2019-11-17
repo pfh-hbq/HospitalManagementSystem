@@ -42,8 +42,7 @@ CREATE TABLE Security (
 -- relationship
 CREATE TABLE SendMessage (
 	message_text VARCHAR(2048) NOT NULL,
-	title VARCHAR(512) NOT NULL,
-	file BYTEA NOT NULL
+	title VARCHAR(512) NOT NULL
 );
 
 CREATE TABLE HR (
