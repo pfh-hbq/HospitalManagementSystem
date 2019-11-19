@@ -1,6 +1,6 @@
 CREATE TABLE EmployeeAccount (
 	password VARCHAR(16) NOT NULL,
-	login VARCHAR(16) NOT NULL,
+	email VARCHAR(16) NOT NULL,
 	education VARCHAR(1024) NOT NULL,
 	date_of_start_of_career DATE NOT NULL,
 	surname VARCHAR(64) NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE EmployeeAccount (
 	phone VARCHAR(11) NOT NULL,
 	email VARCHAR(64) NOT NULL,
 	CONSTRAINT pk_EmployeeAccount PRIMARY KEY (
-		login
+		email
 	 )
 );
 
@@ -17,7 +17,7 @@ CREATE TABLE HeadOfDepartment (
 	CONSTRAINT pk_HeadOfDepartment PRIMARY KEY (
 		SSN
 	 ),
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login)
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email)
 );
 
 CREATE TABLE TaskOfToDoList (
@@ -25,12 +25,12 @@ CREATE TABLE TaskOfToDoList (
 	task_description VARCHAR(2048) NOT NULL,
 	task_title VARCHAR(512) NOT NULL,
 	task_status BOOLEAN NOT NULL,
-	login VARCHAR(16) NOT NULL,
+	email VARCHAR(16) NOT NULL,
 	CONSTRAINT pk_TaskOfToDoList PRIMARY KEY (
 		task_title
 	 ),
-	CONSTRAINT fk_TaskOfToDoList_task_title FOREIGN KEY(login)
-											REFERENCES EmployeeAccount (login)
+	CONSTRAINT fk_TaskOfToDoList_task_title FOREIGN KEY(email)
+											REFERENCES EmployeeAccount (email)
 );
 
 CREATE TABLE Security (
@@ -38,14 +38,14 @@ CREATE TABLE Security (
 	CONSTRAINT pk_Security PRIMARY KEY (
 		SSN
 	 ),
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login)
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email)
 );
 
 -- relationship
 CREATE TABLE SendMessage (
 	message_text VARCHAR(2048) NOT NULL,
 	title VARCHAR(512) NOT NULL,
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login)
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email)
 );
 
 CREATE TABLE HR (
@@ -53,15 +53,16 @@ CREATE TABLE HR (
 	CONSTRAINT pk_HR PRIMARY KEY (
 		SSN
 	 ),
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login)
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email)
 );
 
 -- relationship
 CREATE TABLE AddFire (
+	add_fire_flag SMALLINT NOT NULL,
 	request_status BOOLEAN NOT NULL,
 	head_of_deaprtment VARCHAR(9) REFERENCES HeadOfDepartment(SSN),
 	hr VARCHAR(9) REFERENCES HR(SSN),
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login)
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email)
 );
 
 CREATE TABLE Cleaning (
@@ -69,7 +70,7 @@ CREATE TABLE Cleaning (
 	CONSTRAINT pk_Cleaning PRIMARY KEY (
 		SSN
 	 ),
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login)
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email)
 );
 
 CREATE TABLE Noticeboard (
@@ -99,7 +100,7 @@ CREATE TABLE StaffsTimetable (
 	CONSTRAINT pk_StaffsTimetable PRIMARY KEY (
 		month,year
 	 ),
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login),
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email),
 	head_of_deaprtment VARCHAR(9) REFERENCES HeadOfDepartment(SSN)
 );
 
@@ -107,8 +108,8 @@ CREATE TABLE StaffsTimetable (
 CREATE TABLE SendRequest (
 	status BOOLEAN NOT NULL,
 	purpose VARCHAR(512) NOT NULL,
-	request_timestamp VARCHAR(10) NOT NULL,
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login)
+	request_timestamp TIMESTAMP NOT NULL,
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email)
 );
 
 CREATE TABLE WarehouseManager (
@@ -116,7 +117,7 @@ CREATE TABLE WarehouseManager (
 	CONSTRAINT pk_WarehouseManager PRIMARY KEY (
 		SSN
 	 ),
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login)
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email)
 );
 
 CREATE TABLE Inventory (
@@ -148,7 +149,7 @@ CREATE TABLE PatientAccount (
 );
 
 CREATE TABLE SeeFeedback (
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login),
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email),
 	patient_account INTEGER REFERENCES PatientAccount(medical_insurence_number),
 	feedback VARCHAR(10) REFERENCES Feedback(feedback_timestamp)
 )
@@ -157,7 +158,7 @@ CREATE TABLE SeeFeedback (
 CREATE TABLE Feedback (
 	title VARCHAR(512) NOT NULL,
 	content VARCHAR(2048) NOT NULL,
-	feedback_timestamp VARCHAR(10) NOT NULL,
+	feedback_timestamp TIMESTAMP NOT NULL,
 	medical_insurence_number INTEGER NOT NULL,
 	CONSTRAINT pk_Feedback PRIMARY KEY (
 		feedback_timestamp
@@ -172,7 +173,7 @@ CREATE TABLE Nurse (
 	CONSTRAINT pk_Nurse PRIMARY KEY (
 		SSN
 	 ),
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login)
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email)
 );
 
 
@@ -183,37 +184,45 @@ CREATE TABLE Doctor (
 	CONSTRAINT pk_Doctor PRIMARY KEY (
 		SSN
 	 ),
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login),
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email),
 	head_of_deaprtment VARCHAR(9) REFERENCES HeadOfDepartment(SSN)
 );
 
--- relationship
-CREATE TABLE SendMedicalReport (
+CREATE TABLE MedicalReport (
 	details VARCHAR(2048) NOT NULL,
-	report_timestamp VARCHAR(10) NOT NULL,
+	report_timestamp TIMESTAMP NOT NULL,
 	complaints VARCHAR(2048) NOT NULL,
 	conclusion VARCHAR(2048) NOT NULL,
-	nurse VARCHAR(9) REFERENCES Nurse(SSN),
-	patient_account INTEGER REFERENCES PatientAccount(medical_insurence_number),
-	doctor VARCHAR(9) REFERENCES Doctor(SSN)
+	nurse VARCHAR(9) REFERENCES Nurse(SSN)
 );
+
+-- relationship
+-- CREATE TABLE SendMedicalReport (
+-- 	details VARCHAR(2048) NOT NULL,
+-- 	report_timestamp TIMESTAMP NOT NULL,
+-- 	complaints VARCHAR(2048) NOT NULL,
+-- 	conclusion VARCHAR(2048) NOT NULL,
+-- 	nurse VARCHAR(9) REFERENCES Nurse(SSN),
+-- 	patient_account INTEGER REFERENCES PatientAccount(medical_insurence_number),
+-- 	doctor VARCHAR(9) REFERENCES Doctor(SSN)
+-- );
 
 CREATE TABLE ITSpecialist (
 	SSN VARCHAR(9) NOT NULL,
 	CONSTRAINT pk_ITSpecialist PRIMARY KEY (
 		SSN
 	 ),
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login)
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email)
 );
 
 CREATE TABLE ManagesITEmployee (
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login),
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email),
 	it_specialist VARCHAR(9) REFERENCES ITSpecialist(SSN)
 );
 
 -- relationship
 CREATE TABLE Contacts (
-	contacts_timestamp VARCHAR(10) NOT NULL,
+	contacts_timestamp TIMESTAMP NOT NULL,
 	message VARCHAR(2048) NOT NULL,
 	patient_account INTEGER REFERENCES PatientAccount(medical_insurence_number),
 	it_specialist VARCHAR(9) REFERENCES ITSpecialist(SSN)
@@ -223,7 +232,7 @@ CREATE TABLE Contacts (
 -- relationship
 CREATE TABLE CreateRecipe (
 	recommendations VARCHAR(2048) NOT NULL,
-	recipe_timestamp VARCHAR(10) NOT NULL,
+	recipe_timestamp TIMESTAMP NOT NULL,
 	CONSTRAINT pk_CreateRecipe PRIMARY KEY (
 		recipe_timestamp
 	 ),
@@ -248,7 +257,7 @@ CREATE TABLE Controls (
 
 -- relationship
 CREATE TABLE CreateAppointment (
-	appointment_timestamp VARCHAR(10) NOT NULL,
+	appointment_timestamp TIMESTAMP NOT NULL,
 	room SMALLINT NOT NULL,
 	CONSTRAINT pk_CreateAppointment PRIMARY KEY (
 		appointment_timestamp
@@ -274,7 +283,7 @@ CREATE TABLE Pharmacist (
 	CONSTRAINT pk_Pharmacist PRIMARY KEY (
 		SSN
 	 ),
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login),
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email),
 	patient_account INTEGER REFERENCES PatientAccount(medical_insurence_number)
 );
 
@@ -305,14 +314,14 @@ CREATE TABLE Financial (
 	CONSTRAINT pk_Financial PRIMARY KEY (
 		SSN
 	 ),
-	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login)
+	employee_account VARCHAR(16) REFERENCES EmployeeAccount(email)
 );
 
 CREATE TABLE Bill (
 	quantity INTEGER NOT NULL,
 	bill_name VARCHAR(256) NOT NULL,
 	price MONEY NOT NULL,
-	bill_timestamp VARCHAR(10) NOT NULL,
+	bill_timestamp TIMESTAMP NOT NULL,
 	from_id INTEGER NOT NULL,
 	to_id INTEGER NOT NULL,
 	CONSTRAINT pk_Bill PRIMARY KEY (
@@ -330,7 +339,7 @@ CREATE TABLE ManagesBillFinancial (
 CREATE TABLE RequestForMeds (
 	medicine_name VARCHAR(256) NOT NULL,
 	status BOOLEAN NOT NULL,
-	meds_request_timestamp VARCHAR(10) NOT NULL,
+	meds_request_timestamp TIMESTAMP NOT NULL,
 	patient_account INTEGER REFERENCES PatientAccount(medical_insurence_number),
 	pharmacist VARCHAR(9) REFERENCES Pharmacist(SSN)
 );
