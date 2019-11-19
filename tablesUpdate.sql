@@ -58,6 +58,7 @@ CREATE TABLE HR (
 
 -- relationship
 CREATE TABLE AddFire (
+	add_fire_flag SMALLINT NOT NULL,
 	request_status BOOLEAN NOT NULL,
 	head_of_deaprtment VARCHAR(9) REFERENCES HeadOfDepartment(SSN),
 	hr VARCHAR(9) REFERENCES HR(SSN),
@@ -107,7 +108,7 @@ CREATE TABLE StaffsTimetable (
 CREATE TABLE SendRequest (
 	status BOOLEAN NOT NULL,
 	purpose VARCHAR(512) NOT NULL,
-	request_timestamp VARCHAR(10) NOT NULL,
+	request_timestamp TIMESTAMP NOT NULL,
 	employee_account VARCHAR(16) REFERENCES EmployeeAccount(login)
 );
 
@@ -157,7 +158,7 @@ CREATE TABLE SeeFeedback (
 CREATE TABLE Feedback (
 	title VARCHAR(512) NOT NULL,
 	content VARCHAR(2048) NOT NULL,
-	feedback_timestamp VARCHAR(10) NOT NULL,
+	feedback_timestamp TIMESTAMP NOT NULL,
 	medical_insurence_number INTEGER NOT NULL,
 	CONSTRAINT pk_Feedback PRIMARY KEY (
 		feedback_timestamp
@@ -190,7 +191,7 @@ CREATE TABLE Doctor (
 -- relationship
 CREATE TABLE SendMedicalReport (
 	details VARCHAR(2048) NOT NULL,
-	report_timestamp VARCHAR(10) NOT NULL,
+	report_timestamp TIMESTAMP NOT NULL,
 	complaints VARCHAR(2048) NOT NULL,
 	conclusion VARCHAR(2048) NOT NULL,
 	nurse VARCHAR(9) REFERENCES Nurse(SSN),
@@ -213,7 +214,7 @@ CREATE TABLE ManagesITEmployee (
 
 -- relationship
 CREATE TABLE Contacts (
-	contacts_timestamp VARCHAR(10) NOT NULL,
+	contacts_timestamp TIMESTAMP NOT NULL,
 	message VARCHAR(2048) NOT NULL,
 	patient_account INTEGER REFERENCES PatientAccount(medical_insurence_number),
 	it_specialist VARCHAR(9) REFERENCES ITSpecialist(SSN)
@@ -223,7 +224,7 @@ CREATE TABLE Contacts (
 -- relationship
 CREATE TABLE CreateRecipe (
 	recommendations VARCHAR(2048) NOT NULL,
-	recipe_timestamp VARCHAR(10) NOT NULL,
+	recipe_timestamp TIMESTAMP NOT NULL,
 	CONSTRAINT pk_CreateRecipe PRIMARY KEY (
 		recipe_timestamp
 	 ),
@@ -248,7 +249,7 @@ CREATE TABLE Controls (
 
 -- relationship
 CREATE TABLE CreateAppointment (
-	appointment_timestamp VARCHAR(10) NOT NULL,
+	appointment_timestamp TIMESTAMP NOT NULL,
 	room SMALLINT NOT NULL,
 	CONSTRAINT pk_CreateAppointment PRIMARY KEY (
 		appointment_timestamp
@@ -312,7 +313,7 @@ CREATE TABLE Bill (
 	quantity INTEGER NOT NULL,
 	bill_name VARCHAR(256) NOT NULL,
 	price MONEY NOT NULL,
-	bill_timestamp VARCHAR(10) NOT NULL,
+	bill_timestamp TIMESTAMP NOT NULL,
 	from_id INTEGER NOT NULL,
 	to_id INTEGER NOT NULL,
 	CONSTRAINT pk_Bill PRIMARY KEY (
@@ -330,7 +331,7 @@ CREATE TABLE ManagesBillFinancial (
 CREATE TABLE RequestForMeds (
 	medicine_name VARCHAR(256) NOT NULL,
 	status BOOLEAN NOT NULL,
-	meds_request_timestamp VARCHAR(10) NOT NULL,
+	meds_request_timestamp TIMESTAMP NOT NULL,
 	patient_account INTEGER REFERENCES PatientAccount(medical_insurence_number),
 	pharmacist VARCHAR(9) REFERENCES Pharmacist(SSN)
 );
