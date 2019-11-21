@@ -200,6 +200,9 @@ CREATE TABLE MedicalReport (
 	report_timestamp TIMESTAMP NOT NULL,
 	complaints VARCHAR(2048) NOT NULL,
 	conclusion VARCHAR(2048) NOT NULL,
+	CONSTRAINT pk_MedicalReport PRIMARY KEY (
+		report_timestamp
+	 ),
 	nurse VARCHAR(9) REFERENCES Nurse(SSN)
 );
 
@@ -243,11 +246,6 @@ CREATE TABLE Department (
 		department_name
 	 ),
 	doctor VARCHAR(9) REFERENCES Doctor(SSN),
-	head_of_department VARCHAR(9) REFERENCES HeadOfDepartment(SSN)
-);
-
-CREATE TABLE Controls (
-	department VARCHAR(512) REFERENCES Department(department_name),
 	head_of_department VARCHAR(9) REFERENCES HeadOfDepartment(SSN)
 );
 
